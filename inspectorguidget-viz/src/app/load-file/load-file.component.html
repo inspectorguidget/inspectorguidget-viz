@@ -1,0 +1,19 @@
+<h3>Welcome to inspectorguidget-viz!</h3>
+
+<div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)" *ngIf="files.length < 1">
+    Drop your file here or click to select manually
+    <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
+</div>
+
+<div  class="files-list" *ngFor="let file of files;let i=index">
+    <p>{{ file }}</p>
+    <button class="delete-file" (click)="deleteAttachment(i)">
+        <img src="../../assets/Recycle_Bin_Full.ico">
+    </button>
+</div>
+
+<!--deux boutons, un non cliquable qui apprait tant qu'aucun fichier n'a été chargé, un cliquable qui lance la visualisation-->
+<div>
+    <button id="viz" disabled="disabled" *ngIf="files.length == 0">Viz</button> 
+    <button id="viz" (click)="viz()" *ngIf="files.length == 1" routerLink="/visualisation">Viz</button>
+</div>

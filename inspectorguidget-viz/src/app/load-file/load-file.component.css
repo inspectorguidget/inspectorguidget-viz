@@ -1,0 +1,61 @@
+
+.uploadfilecontainer {
+background-repeat: no-repeat;
+background-size: 100px;
+background-position: center;
+height: 200px;
+width: 80%;
+margin: 20px auto;
+border: 2px dashed #8B9599;
+border-radius: 10px;
+}
+
+/*Permet de changer la couleur du background quand on passe la souris dessus*/
+.uploadfilecontainer:hover {
+cursor: pointer;
+background-color: #8B9599 !important;
+opacity: 0.8;
+}
+
+.files-list {
+display: flex;
+justify-content: space-between;
+width: 80%;
+margin: 10px auto;
+background: #ffffff;
+border: 1px dashed;
+border-radius: 12px;
+padding: 5px;
+color: #8B9599;
+}
+
+.files-list .delete-file {
+background: transparent;
+border: none;
+cursor: pointer;
+}
+.files-list .delete-file img{
+width:30px;
+}
+
+#viz{
+    display:block;
+    margin:auto;
+    width: 20%;
+    border-radius:12px;
+    border: 2px solid #8B9599;
+    color: black;
+    font-size:18px;
+}
+#viz:hover{
+    background-color: #8B9599;
+}
+
+h3{
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 30px;
+    font-weight: bold;
+    padding-bottom: 75px;
+    padding-top:25px;
+}
