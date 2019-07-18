@@ -8,6 +8,8 @@ import { VisualisationComponent } from './visualisation/visualisation.component'
 import { AboutProjectComponent } from './about-project/about-project.component';
 import { LoadFileComponent } from './load-file/load-file.component';
 import { DragDropDirective } from './drag-drop.directive';
+import { GraphComponent } from './graph/graph.component';
+import { DetailNodeComponent } from './detail-node/detail-node.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { DragDropDirective } from './drag-drop.directive';
     AboutProjectComponent,
     LoadFileComponent,
     DragDropDirective,
+    GraphComponent,
+    DetailNodeComponent,
   ],
   imports: [
     BrowserModule,

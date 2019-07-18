@@ -26,8 +26,7 @@ export class DragDropDirective {
     evt.stopPropagation();
     let files = evt.dataTransfer.files;
     if(files.length > 0){
-      this.onFileDropped.emit(files)
-      console.log("un fichier a été déposé, il faut le charger");
+      this.onFileDropped.emit(files);
     }
   }
 }

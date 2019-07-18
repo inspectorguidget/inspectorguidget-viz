@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DataParserService } from '../service/data-parser.service';
 
 @Component({
   selector: 'app-load-file',
@@ -7,26 +8,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoadFileComponent implements OnInit {
 
-  files: any = [];
+  files: File[] = [];
 
-  constructor() { }
+  constructor(private dataParserService : DataParserService) { }
 
   ngOnInit() {
-  }
-
-  viz(){
-    console.log("changement de page")
   }
 
   uploadFile(event) {
     for (let index = 0; index < event.length; index++) {
       const element = event[index];
-      this.files.push(element.name)
+      this.files.push(element)
     }  
   }
 
   deleteAttachment(index) {
     this.files.splice(index, 1) //remove 1 file from index in
+  }
+
+  startVis(file : File){
+    this.dataParserService.parseFile(file);
   }
 
 }

@@ -1,0 +1,9 @@
+.classBox{
+    position : fixed;
+    top: 200;
+    left:200;
+
+    width : 500;
+    height : 250;
+    border-color: black;
+}

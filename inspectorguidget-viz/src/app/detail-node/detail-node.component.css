@@ -1,0 +1,29 @@
+#rightBlock{
+    position: fixed;
+    right:0;
+    top: 10%;
+    width: 30%;
+    height: 80%;
+    background-color: #ECEDED;
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+
+#rightBlock h3{
+    text-align: center;
+}
+
+#rightBlock #closeButton{
+
+    display:block;
+    margin:auto;
+    width: 20%;
+    border-radius:12px;
+    border: 2px solid #8B9599;
+    color: black;
+    font-size:18px;
+}
+
+#rightBlock #closeButton:hover{
+    background-color: #8B9599;
+}

@@ -6,7 +6,7 @@
 </div>
 
 <div  class="files-list" *ngFor="let file of files;let i=index">
-    <p>{{ file }}</p>
+    <p>{{ file.name }}</p>
     <button class="delete-file" (click)="deleteAttachment(i)">
         <img src="../../assets/Recycle_Bin_Full.ico">
     </button>
@@ -15,5 +15,5 @@
 <!--deux boutons, un non cliquable qui apprait tant qu'aucun fichier n'a été chargé, un cliquable qui lance la visualisation-->
 <div>
     <button id="viz" disabled="disabled" *ngIf="files.length == 0">Viz</button> 
-    <button id="viz" (click)="viz()" *ngIf="files.length == 1" routerLink="/visualisation">Viz</button>
+    <button id="viz" (click)="startVis(files[0])" *ngIf="files.length == 1">Viz</button>
 </div>

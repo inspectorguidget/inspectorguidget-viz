@@ -7,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class VisualisationComponent implements OnInit {
 
+  info :String;
+
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {  }
+
 
 }
