@@ -9,7 +9,7 @@ import { AboutProjectComponent } from './about-project/about-project.component';
 import { LoadFileComponent } from './load-file/load-file.component';
 import { DragDropDirective } from './drag-drop.directive';
 import { GraphComponent } from './graph/graph.component';
-import { DetailNodeComponent } from './detail-node/detail-node.component';
+import { DetailElementComponent } from './detail-element/detail-element.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +20,7 @@ import { DetailNodeComponent } from './detail-node/detail-node.component';
     LoadFileComponent,
     DragDropDirective,
     GraphComponent,
-    DetailNodeComponent,
+    DetailElementComponent,
   ],
   imports: [
     BrowserModule,

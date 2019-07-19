@@ -1,2 +1,2 @@
-<div #graph id="graph"></div>
-<app-detail-node [node]="selectedObject" *ngIf="selectedObject!=null" (unselect)="onClose($event)"></app-detail-node>
+<svg width='960' height='600'></svg>
+<app-detail-element [element]="selectedObject" [elementType]="typeSelectedObject" *ngIf="selectedObject!=null" (unselect)="onClose($event)"></app-detail-element>

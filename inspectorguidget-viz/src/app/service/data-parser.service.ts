@@ -8,14 +8,17 @@ export class DataParserService {
 
   constructor(private router: Router) { }
 
-  dataFile:File;
-  jsonData: any;
-  transformedData : string;
+  private dataFile:File;
+  private jsonData: any;
+  private transformedData : string;
+  private existingClass : String[] = [];
 
+  // select file the user dropped
   setFile(file: File){
     this.dataFile = file;
   }
 
+  // read the file and extract it's content as a string (async!)
   parseFile(file:File){
     this.setFile(file);
 
@@ -35,7 +38,10 @@ export class DataParserService {
 
   }
 
+  // build the file according to the format necessary to build graph
   transform(){
+    this.getAllClasses();
+
     let jsonObj = JSON.parse(this.jsonData);
     let widBinding = jsonObj['widgetBindings'];
 
@@ -46,14 +52,14 @@ export class DataParserService {
 
     for (let wb of widBinding){
 
-      nodes +="{ \"id\" : \"" + indexWB + "i0\", \"name\" : \"Interaction\", \"type\" : \"interaction\" },";
-      nodes +="{ \"id\" : \"" + indexWB + "c0\", \"name\" : \"UICommand\", \"type\" : \"cmd\"},";
+      nodes +="{ \"id\" : \"" + indexWB + "i0\", \"name\" : \"Interaction\", \"type\" : \"interaction\", \"group\" : "+ this.getGroupId(wb['interaction']['handlers'][0]['location']['classRef']['className']) + " },";
+      nodes +="{ \"id\" : \"" + indexWB + "c0\", \"name\" : \"UICommand\", \"type\" : \"cmd\", \"group\" : " + this.getGroupId(wb['cmd']['location']['classRef']['className']) + "},";
 
       
       let widgets = wb['widgets'];
       let nbWidget = 0;
       for(let widget of widgets){
-        nodes += "{ \"id\" : \"" + indexWB + "w" + nbWidget + "\", \"name\" : \"Widget\", \"type\" : \"widgets\"}";
+        nodes += "{ \"id\" : \"" + indexWB + "w" + nbWidget + "\", \"name\" : \"Widget\", \"type\" : \"widgets\", \"group\" : " + this.getGroupId(widget['usages'][0]['classRef']['className']) + "}";
 
         links +="{ \"source\" : \"" + indexWB + "i0\", \"target\" : \"" + indexWB + "w" + nbWidget + "\" },";
         links += "{ \"source\" : \"" + indexWB + "w" + nbWidget + "\", \"target\" : \"" + indexWB + "c0\" }";
@@ -73,16 +79,17 @@ export class DataParserService {
     }
 
     this.transformedData = "{" + nodes + links + "]}";
-
-    //once the transformation is done, we move to the visualisation page
+    console.log(this.transformedData);
     this.router.navigate(['/visualisation']);
   }
 
+  // 
   getTransformedData() : string {
     return this.transformedData;
   }
 
-  getInfo(node : any){
+  // find and return the info displayed in detail-element
+  getNodeInfo(node : any){
 
     let jsonObject = JSON.parse(this.jsonData);
     let id : String = node.id;
@@ -97,22 +104,60 @@ export class DataParserService {
     else{
       info = JSON.stringify(jsonObject['widgetBindings'][wbNumber][node.type]);
     }
+
+    //TODO: return info we're going to display
     return info;
   }
 
-  getClass(node:any){
-    let info = JSON.parse(this.getInfo(node));
-    let nodeClass: any;
-    if(node.type === "widgets"){
-      nodeClass = JSON.stringify(info['usages'][0]['classRef']['className']);
+  //enables us to build the clusters according to the classes
+  getAllClasses(){
+    let jsonObj = JSON.parse(this.jsonData);
+
+    
+    let widgetBindings = jsonObj['widgetBindings'];
+
+    for(let wb of widgetBindings){
+
+      //getting class of all widgets
+      let widgets = wb['widgets'];
+      for(let widget of widgets){
+        let myClass = widget['usages'][0]['classRef']['className'];
+        if(this.getGroupId(myClass) == -1){
+          this.existingClass.push(myClass);
+        }
+      }
+
+      //getting class of all interaction
+      let interactionClass = wb['interaction']['handlers'][0]['location']['classRef']['className'];
+      if(this.getGroupId(interactionClass) == -1){
+        this.existingClass.push(interactionClass);
+      }
+
+      //getting class of all UICmd
+      let cmdClass = wb['cmd']['location']['classRef']['className'];
+      if(this.getGroupId(cmdClass) == -1){
+        this.existingClass.push(cmdClass);
+      }
     }
-    else if (node.type === "interaction"){
-      nodeClass = JSON.stringify(info['handlers'][0]['location']['classRef']['className']);
+
+  }
+
+  //return number group, parameter : name of class, return -1 if not in, also use to know if a className is in array
+  getGroupId(className : any){
+    let i : number;
+    for(i=0;i<this.existingClass.length;i++){
+      if(className == this.existingClass[i]){
+        break;
+      }
     }
-    else {
-      nodeClass = JSON.stringify(info['location']['classRef']['className']);
+
+    if(i==this.existingClass.length){
+      return -1;
     }
-    return nodeClass;
+    else{
+      //console.log(i);
+      return i;
+    }
   }
 
 }
