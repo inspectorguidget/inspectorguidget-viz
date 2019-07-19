@@ -1,0 +1,8 @@
+<div id=rightBlock>
+    <h3 *ngIf ="elementType === 'node'">{{element.name}} - Details</h3>
+    <p>
+        {{info}}
+    </p>
+    <button (click)="close()" id="closeButton" >close</button>
+    
+</div>
