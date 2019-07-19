@@ -2,7 +2,7 @@
     position: fixed;
     right:0;
     top: 10%;
-    width: 30%;
+    width: 20%;
     height: 80%;
     background-color: #ECEDED;
     overflow-y: auto;
@@ -26,4 +26,10 @@
 
 #rightBlock #closeButton:hover{
     background-color: #8B9599;
+}
+
+#rightBlock p{
+    text-align: left;
+    word-wrap: break-word;
+    white-space: pre-line;
 }

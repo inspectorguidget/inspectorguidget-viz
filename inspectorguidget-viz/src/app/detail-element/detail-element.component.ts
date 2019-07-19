@@ -34,11 +34,9 @@ export class DetailElementComponent implements OnInit {
 
   initialiseNode(){
     this.info = this.dataParserService.getNodeInfo(this.element);
-    //TODO : if click on class, select object become cluster
   }
 
   initialiseCluster(){
-    this.info = "cluster";
-    //TODO : call function in service to have access to package and name of elements inside
+    this.info = this.dataParserService.getClusterInfo(this.element);
   }
 }

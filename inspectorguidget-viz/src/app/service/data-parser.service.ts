@@ -79,34 +79,12 @@ export class DataParserService {
     }
 
     this.transformedData = "{" + nodes + links + "]}";
-    console.log(this.transformedData);
     this.router.navigate(['/visualisation']);
   }
 
   // 
   getTransformedData() : string {
     return this.transformedData;
-  }
-
-  // find and return the info displayed in detail-element
-  getNodeInfo(node : any){
-
-    let jsonObject = JSON.parse(this.jsonData);
-    let id : String = node.id;
-    let type: String = node.type;
-
-    let wbNumber = id.slice(0, id.indexOf(type.charAt(0)));
-    let instanceNumber = id.slice(id.indexOf(type.charAt(0)) + 1);  
-    let info :any;
-    if(type === "widgets"){
-      info = JSON.stringify(jsonObject['widgetBindings'][wbNumber][node.type][instanceNumber]);
-    }
-    else{
-      info = JSON.stringify(jsonObject['widgetBindings'][wbNumber][node.type]);
-    }
-
-    //TODO: return info we're going to display
-    return info;
   }
 
   //enables us to build the clusters according to the classes
@@ -159,5 +137,68 @@ export class DataParserService {
       return i;
     }
   }
+
+  // find and return the info displayed in detail-element
+  getNodeInfo(node : any){
+
+    let jsonObject = JSON.parse(this.jsonData);
+    let id : String = node.id;
+    let type: String = node.type;
+
+    let wbNumber = id.slice(0, id.indexOf(type.charAt(0)));
+    let instanceNumber = id.slice(id.indexOf(type.charAt(0)) + 1);  
+    let info : String = " name : " + node.name + "\n\n";
+    let infoExtractor : any;
+    if(type === "widgets"){
+      infoExtractor = jsonObject['widgetBindings'][wbNumber][node.type][instanceNumber];
+      info += "class : " + infoExtractor['usages'][0]['classRef']['className'] + "\npkg : " + infoExtractor['usages'][0]['classRef']['pkg']
+        + "\n\nid : " + infoExtractor['id'] + "\n type : " + infoExtractor['type'];
+    }
+    else  if (type === "interaction"){
+      infoExtractor = jsonObject['widgetBindings'][wbNumber][node.type];
+      info += "class : " + infoExtractor['handlers'][0]['location']['classRef']['className'] + "\npkg : " 
+      + infoExtractor['handlers'][0]['location']['classRef']['pkg'] + "\n\n type : " + infoExtractor['type'];
+    }
+    else{
+      infoExtractor = jsonObject['widgetBindings'][wbNumber][node.type];
+      info += "class : " + infoExtractor['location']['classRef']['className'] + "\npkg : " + infoExtractor['location']['classRef']['pkg']
+        + " \n\nlocation : " + infoExtractor['location']['lineStart'] + "-" + infoExtractor['location']['lineEnd'];
+    }
+
+    //TODO: return info we're going to display
+    return info;
+  }
+
+  // get info abour a cluster
+  getClusterInfo (cluster : any){  // parameter cluster is number of group
+    let className = this.existingClass[cluster];
+    let info = "className : " + className + "\n";
+    //get all elements in the group
+
+    let nodes = JSON.parse(this.transformedData)['nodes'];
+    let elements = "";
+    for(let node of nodes){
+      if(node.group == cluster){
+        elements += node.type + " : " + node.name + ",\n"
+      }
+    }
+    // get package
+    let node = nodes[0];
+    let pkg = "";
+    let infoExtractor = JSON.parse(this.jsonData)['widgetBindings'][0][node.type];
+    if(node.type === "widgets"){
+      pkg = infoExtractor['usages'][0]['classRef']['pkg'];
+    } else if (node.type === "interaction"){
+      pkg = infoExtractor['handlers'][0]['location']['classRef']['pkg'];
+    } else {
+      pkg = infoExtractor['location']['classRef']['pkg'];
+    }
+
+    //update info
+    info += "pkg : " + pkg + "\n\n";
+    info += "Elements : \n" + elements;
+    return info;
+  }
+  
 
 }
