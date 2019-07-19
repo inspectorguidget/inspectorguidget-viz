@@ -14,6 +14,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
   data : any;
   selectedObject : any = null;
   typeSelectedObject :any;
+  private color = d3.scaleOrdinal(d3.schemeCategory10);
   constructor(private dataParserService : DataParserService) { }
 
   ngOnInit() {
@@ -26,7 +27,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   buildGraph(){
     var width = 1000, height = 500;
-
     var valueline = d3.line()
       .x(function(d) { return d[0]; })
       .y(function(d) { return d[1]; })
@@ -63,7 +63,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     node.append("circle")
       .attr("id", (d:any) => {return d.id})  // id to be able to make difference between circle
       .attr("r", 10)
-      .style("fill", "#8b9599")
+      .style("fill", (d:any) =>{ return this.color(d.group); })
       
     node.append("text")
       .text((d : any) => { return d.name })
@@ -88,8 +88,10 @@ export class GraphComponent implements OnInit, AfterViewInit {
       .attr("class", "path_placeholder")
       .append("path")
       .attr("id", (d : any) => { return d; })
-      .attr('stroke', "#8B9599")
-      .attr('fill', "#ECEDED")
+      .attr('stroke', (d:any) =>{ return this.color(d); })
+      .attr("stroke-width", "0.5px")
+      .attr('fill', (d:any) =>{ return this.color(d); })
+      .attr("fill-opacity", 0.1)
       .attr('opacity', 0)
       .on("click", (d:any) => {
         this.detailCluster(d);
@@ -154,8 +156,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
 
   onClose(unselect: boolean) {
     if(unselect == true){
-      d3.selectAll("circle").style("fill", "#8B9599");  // change color of all nodes to unselected
-      d3.selectAll("path").style("stroke", "#8B9599");  // change color of all nodes to unselected
+      d3.selectAll("circle").attr('opacity', 1);  // change opacity of all nodes to unselected
+      d3.selectAll("path").attr("stroke-width", "0.5px");  // change stroke-width of all nodes to unselected
       this.selectedObject=null;
       this.typeSelectedObject = null;
     }
@@ -164,13 +166,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
   detailCluster(cluster: any){
     if(this.selectedObject == cluster){
       this.selectedObject = null;
-      d3.selectAll("path[id=\"" + cluster + "\"]").style("stroke", "#8B9599");  // change color of selected element to unselected
+      d3.selectAll("path[id=\"" + cluster + "\"]").attr("stroke-width", "0.5px");  // change SW of selected element to unselected
       this.typeSelectedObject = null;
     }
     else{
-      d3.selectAll("path").style("stroke", "#8B9599");  // change color of all clusters to unselected
-      d3.selectAll("circle").style("fill", "#8B9599");  // change color of all nodes to unselected
-      d3.selectAll("path[id=\"" + cluster + "\"]").style("stroke", "#D5D6D6");  // change color of selected element to selected
+      d3.selectAll("path").attr("stroke-width", "0.5px");  // change SW of all clusters to unselected
+      d3.selectAll("circle").attr('opacity', 1);  // change opacity of all nodes to unselected
+      d3.selectAll("path[id=\"" + cluster + "\"]").attr("stroke-width", "1.5px");  // change SW of selected element to selected
       this.selectedObject = cluster;
       this.typeSelectedObject = "cluster";
     }
@@ -179,13 +181,13 @@ export class GraphComponent implements OnInit, AfterViewInit {
   detailNode(node : any){
     if(this.selectedObject == node){
       this.selectedObject = null;
-      d3.selectAll("circle[id=\"" + node.id + "\"]").style("fill", "#8B9599");  // change color of selected element to unselected
+      d3.selectAll("circle[id=\"" + node.id + "\"]").attr('opacity', 1);  // change opacity of selected element to unselected
       this.typeSelectedObject = null;
     }
     else{
-      d3.selectAll("circle").style("fill", "#8B9599");  // change color of all nodes to unselected
-      d3.selectAll("path").style("stroke", "#8B9599");  // change color of all clusters to unselected
-      d3.selectAll("circle[id=\"" + node.id + "\"]").style("fill", "#D5D6D6");  // change color of selected element to selected
+      d3.selectAll("circle").attr('opacity', 1);  // change opacity of all nodes to unselected
+      d3.selectAll("path").attr("stroke-width", "0.5px");  // change SW of all clusters to unselected
+      d3.selectAll("circle[id=\"" + node.id + "\"]").attr('opacity', 0.75);  // change opacity of selected element to selected
       this.selectedObject = node;
       this.typeSelectedObject = "node";
     }
