@@ -26,13 +26,15 @@ export class GraphComponent implements OnInit, AfterViewInit {
   }
 
   buildGraph(){
-    var width = 1000, height = 500;
+    var xMax = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var yMax = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+
+    var width = xMax, height = yMax -20/100.0*yMax;
     var valueline = d3.line()
       .x(function(d) { return d[0]; })
       .y(function(d) { return d[1]; })
       .curve(d3.curveCatmullRomClosed);
 
-    var curveTypes = ['curveBasisClosed', 'curveCardinalClosed', 'curveCatmullRomClosed', 'curveLinearClosed'];
     var polygon, centroid;
     var scaleFactor = 2;
 
@@ -69,7 +71,9 @@ export class GraphComponent implements OnInit, AfterViewInit {
       .text((d : any) => { return d.name })
       .style("font", "10px sans-serif");
     
-    // Something to do with the groups
+    // count members of each group. Groups with less
+    // than 3 member will not be considered (creating
+    // a convex hull need 3 points at least)
     var groupIds = d3.set(this.data.nodes.map((n:any) => { return n.group; }))
     .values()
     .map( (groupId : any) => {
@@ -106,7 +110,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     var simulation = d3.forceSimulation(this.data.nodes)
       .force("link", d3.forceLink() .id((d: any) => { return d.id; }).links(this.data.links))
       .force("charge", d3.forceManyBody())
-      .force("center", d3.forceCenter(width/2, height/2))
+      .force("center", d3.forceCenter(width/3, height/2))
       .nodes(this.data.nodes)
       .on("tick", () =>{
         link
@@ -136,11 +140,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
             .attr('d', function(d) {
               polygon = polygonGenerator(d);          
               centroid = d3.polygonCentroid(polygon);
-      
-              // to scale the shape properly around its points:
-              // move the 'g' element to the centroid point, translate
-              // all the path around the center of the 'g' and then
-              // we can scale the 'g' element properly
               return valueline(
                 polygon.map(function(point) {
                   return [  point[0] - centroid[0], point[1] - centroid[1] ];
@@ -151,7 +150,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
           d3.select(path.node().parentNode).attr('transform', 'translate('  + centroid[0] + ',' + (centroid[1]) + ') scale(' + scaleFactor + ')');
         });
       }
-  
+
   }
 
   onClose(unselect: boolean) {
@@ -187,7 +186,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
     else{
       d3.selectAll("circle").attr('opacity', 1);  // change opacity of all nodes to unselected
       d3.selectAll("path").attr("stroke-width", "0.5px");  // change SW of all clusters to unselected
-      d3.selectAll("circle[id=\"" + node.id + "\"]").attr('opacity', 0.75);  // change opacity of selected element to selected
+      d3.selectAll("circle[id=\"" + node.id + "\"]").attr('opacity', 0.5);  // change opacity of selected element to selected
       this.selectedObject = node;
       this.typeSelectedObject = "node";
     }
