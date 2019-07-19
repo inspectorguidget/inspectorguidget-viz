@@ -7,7 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { VisualisationComponent } from './visualisation/visualisation.component';
 import { AboutProjectComponent } from './about-project/about-project.component';
 import { LoadFileComponent } from './load-file/load-file.component';
-import { DragDropDirective } from './drag-drop.directive';
+import { DragDropDirective } from './directives/drag-drop.directive';
 import { GraphComponent } from './graph/graph.component';
 import { DetailElementComponent } from './detail-element/detail-element.component';
 
