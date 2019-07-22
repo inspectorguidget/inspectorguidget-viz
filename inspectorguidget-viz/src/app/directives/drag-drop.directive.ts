@@ -7,7 +7,7 @@ export class DragDropDirective {
 
   @Output() onFileDropped = new EventEmitter<any>();
 
-  @HostBinding('style.background') private background = '#eee';
+  @HostBinding('style.background') background = '#eee';
 
   constructor() { }
 

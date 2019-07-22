@@ -42,11 +42,14 @@ export class GraphComponent implements OnInit, AfterViewInit {
       .attr("width", width)
       .attr("height", height);
 
+    var g = svg.append('g')
+      .attr('class', "everything");
+
     //Building the groups:
-    var groups = svg.append('g').attr('class', 'groups');
+    var groups = g.append('g').attr('class', 'groups');
 
     //Building the links
-    var link = svg.selectAll(".link")
+    var link = g.selectAll(".link")
       .data(this.data.links)
       .enter().append("line")
       .attr("class", "link")
@@ -54,7 +57,7 @@ export class GraphComponent implements OnInit, AfterViewInit {
       .style("stroke-width", 2);
     
     //building the nodes
-    var node=svg.selectAll(".node")
+    var node=g.selectAll(".node")
       .data(this.data.nodes).enter()
       .append("g")
       .attr("class", "node")
@@ -124,32 +127,40 @@ export class GraphComponent implements OnInit, AfterViewInit {
       })
       .force('link')
 
-      var polygonGenerator = function(groupId) {
-        var node_coords : [number,number][]= node
-          .filter((d:any) => { return d.group == groupId; })
-          .data()
-          .map((d:any) => { return [d.x, d.y]; });
-          
-        return d3.polygonHull(node_coords);
-      };
+    var polygonGenerator = function(groupId) {
+      var node_coords : [number,number][]= node
+        .filter((d:any) => { return d.group == groupId; })
+        .data()
+        .map((d:any) => { return [d.x, d.y]; });
+        
+      return d3.polygonHull(node_coords);
+    };
 
-      function updateGroups() {
-        groupIds.forEach(function(groupId) {
-          var path = paths.filter(function(d) { return d == groupId;})
-            .attr('transform', 'scale(1) translate(0,0)')
-            .attr('d', function(d) {
-              polygon = polygonGenerator(d);          
-              centroid = d3.polygonCentroid(polygon);
-              return valueline(
-                polygon.map(function(point) {
-                  return [  point[0] - centroid[0], point[1] - centroid[1] ];
-                })
-              );
-            });
-      
-          d3.select(path.node().parentNode).attr('transform', 'translate('  + centroid[0] + ',' + (centroid[1]) + ') scale(' + scaleFactor + ')');
-        });
-      }
+    function updateGroups() {
+      groupIds.forEach(function(groupId) {
+        var path = paths.filter(function(d) { return d == groupId;})
+          .attr('transform', 'scale(1) translate(0,0)')
+          .attr('d', function(d) {
+            polygon = polygonGenerator(d);          
+            centroid = d3.polygonCentroid(polygon);
+            return valueline(
+              polygon.map(function(point) {
+                return [  point[0] - centroid[0], point[1] - centroid[1] ];
+              })
+            );
+          });
+    
+        d3.select(path.node().parentNode).attr('transform', 'translate('  + centroid[0] + ',' + (centroid[1]) + ') scale(' + scaleFactor + ')');
+      });
+    }
+
+    //add zoom capabilities 
+    var zoom_handler = d3.zoom()
+    .on("zoom", () => {
+      g.attr("transform", d3.event.transform)
+    });
+
+    zoom_handler(d3.selectAll('svg')); 
 
   }
 

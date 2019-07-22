@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DataParserService } from '../service/data-parser.service';
 
+
 @Component({
   selector: 'app-load-file',
   templateUrl: './load-file.component.html',
@@ -28,6 +29,10 @@ export class LoadFileComponent implements OnInit {
 
   startVis(file : File){
     this.dataParserService.parseFile(file);
+  }
+
+  fileInput(){
+    console.log("ouverture du dialog pour choisir un fichier")
   }
 
 }

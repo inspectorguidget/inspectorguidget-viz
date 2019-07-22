@@ -8,5 +8,6 @@
 > 0.5%
 last 2 versions
 Firefox ESR
+Electron 5.0.1
 not dead
 not IE 9-11 # For IE 9-11 support, remove 'not'.

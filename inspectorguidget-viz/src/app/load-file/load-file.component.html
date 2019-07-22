@@ -1,8 +1,11 @@
 <h3>Welcome to inspectorguidget-viz!</h3>
 
-<div class="uploadfilecontainer" (click)="fileInput.click()" appDragDrop (onFileDropped)="uploadFile($event)" *ngIf="files.length < 1">
-    Drop your file here or click to select manually
+<div class="uploadfilecontainer" (click)="fileInput()" appDragDrop (onFileDropped)="uploadFile($event)" *ngIf="files.length < 1">
+    Drop your file here 
+    <!--do not work with electron, close the app
+    or click to select manually
     <input hidden type="file" #fileInput (change)="uploadFile($event.target.files)">
+    -->
 </div>
 
 <div  class="files-list" *ngFor="let file of files;let i=index">
@@ -11,6 +14,8 @@
         <img src="../../assets/Recycle_Bin_Full.ico">
     </button>
 </div>
+
+<br>
 
 <!--deux boutons, un non cliquable qui apprait tant qu'aucun fichier n'a été chargé, un cliquable qui lance la visualisation-->
 <div>
